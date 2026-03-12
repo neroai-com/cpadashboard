@@ -931,3 +931,360 @@ export const dashboardKPIs: DashboardKPI[] = [
     icon: "percent",
   },
 ];
+
+/* ══════════════════════════════════════════════════════
+   INDIVIDUAL / FAMILY CFO DATA
+   ══════════════════════════════════════════════════════ */
+
+export interface Subscription {
+  id: string;
+  name: string;
+  category: "streaming" | "software" | "fitness" | "news" | "food" | "cloud" | "other";
+  amount: number;
+  cycle: "monthly" | "yearly";
+  nextBill: string;
+  icon: string;
+  shared: boolean;
+  status: "active" | "trial" | "cancelling";
+}
+
+export interface SavingsGoal {
+  id: string;
+  name: string;
+  targetAmount: number;
+  currentAmount: number;
+  monthlyContribution: number;
+  targetDate: string;
+  icon: string;
+  color: string;
+  autoSave: boolean;
+}
+
+export interface FamilyMember {
+  id: string;
+  name: string;
+  relationship: "self" | "spouse" | "child" | "dependent";
+  age: number;
+  linkedAccounts: number;
+  monthlyCost: number;
+  initials: string;
+  color: string;
+}
+
+export interface SpendingCategory {
+  id: string;
+  name: string;
+  amount: number;
+  percent: number;
+  icon: string;
+  color: string;
+  trend: "up" | "down" | "flat";
+  trendValue: string;
+  subcategories: { name: string; amount: number }[];
+}
+
+export interface TaxEstimate {
+  id: string;
+  label: string;
+  amount: number;
+  type: "income" | "deduction" | "credit" | "payment";
+}
+
+export const subscriptions: Subscription[] = [
+  { id: "sub-1", name: "Netflix", category: "streaming", amount: 22.99, cycle: "monthly", nextBill: "Mar 18", icon: "tv", shared: true, status: "active" },
+  { id: "sub-2", name: "Spotify Family", category: "streaming", amount: 16.99, cycle: "monthly", nextBill: "Mar 22", icon: "music", shared: true, status: "active" },
+  { id: "sub-3", name: "YouTube Premium", category: "streaming", amount: 13.99, cycle: "monthly", nextBill: "Apr 1", icon: "play", shared: true, status: "active" },
+  { id: "sub-4", name: "iCloud+ 2TB", category: "cloud", amount: 9.99, cycle: "monthly", nextBill: "Mar 15", icon: "cloud", shared: true, status: "active" },
+  { id: "sub-5", name: "ChatGPT Plus", category: "software", amount: 20.00, cycle: "monthly", nextBill: "Mar 28", icon: "bot", shared: false, status: "active" },
+  { id: "sub-6", name: "Adobe Creative Cloud", category: "software", amount: 54.99, cycle: "monthly", nextBill: "Apr 3", icon: "pen-tool", shared: false, status: "active" },
+  { id: "sub-7", name: "Planet Fitness", category: "fitness", amount: 24.99, cycle: "monthly", nextBill: "Apr 1", icon: "dumbbell", shared: false, status: "active" },
+  { id: "sub-8", name: "WSJ Digital", category: "news", amount: 38.99, cycle: "monthly", nextBill: "Apr 5", icon: "newspaper", shared: false, status: "active" },
+  { id: "sub-9", name: "HelloFresh", category: "food", amount: 79.99, cycle: "monthly", nextBill: "Mar 20", icon: "chef-hat", shared: true, status: "active" },
+  { id: "sub-10", name: "Amazon Prime", category: "other", amount: 139.00, cycle: "yearly", nextBill: "Jun 14", icon: "package", shared: true, status: "active" },
+  { id: "sub-11", name: "Costco Membership", category: "other", amount: 65.00, cycle: "yearly", nextBill: "Sep 1", icon: "shopping-cart", shared: true, status: "active" },
+];
+
+// Monthly sub total (annuals prorated)
+export const subscriptionMonthlyTotal = subscriptions.reduce((s, sub) => {
+  return s + (sub.cycle === "yearly" ? sub.amount / 12 : sub.amount);
+}, 0);
+// → ~$299.91/mo
+
+export const subscriptionsByCategory = (() => {
+  const map: Record<string, { count: number; total: number }> = {};
+  for (const sub of subscriptions) {
+    if (!map[sub.category]) map[sub.category] = { count: 0, total: 0 };
+    map[sub.category].count += 1;
+    map[sub.category].total += sub.cycle === "yearly" ? sub.amount / 12 : sub.amount;
+  }
+  return map;
+})();
+
+export const savingsGoals: SavingsGoal[] = [
+  {
+    id: "goal-1",
+    name: "Emergency Fund",
+    targetAmount: 50000,
+    currentAmount: 13200, // matches Ally Emergency Fund account
+    monthlyContribution: 500,
+    targetDate: "2032-06-01",
+    icon: "shield",
+    color: "bg-accent-green",
+    autoSave: true,
+  },
+  {
+    id: "goal-2",
+    name: "Vacation — Italy 2027",
+    targetAmount: 12000,
+    currentAmount: 4800,
+    monthlyContribution: 600,
+    targetDate: "2027-03-01",
+    icon: "plane",
+    color: "bg-accent-blue",
+    autoSave: true,
+  },
+  {
+    id: "goal-3",
+    name: "Kids College Fund",
+    targetAmount: 200000,
+    currentAmount: 69600, // matches 529 account
+    monthlyContribution: 800,
+    targetDate: "2038-08-01",
+    icon: "graduation-cap",
+    color: "bg-accent-purple",
+    autoSave: true,
+  },
+  {
+    id: "goal-4",
+    name: "New Car Down Payment",
+    targetAmount: 15000,
+    currentAmount: 6200,
+    monthlyContribution: 400,
+    targetDate: "2027-12-01",
+    icon: "car",
+    color: "bg-accent-orange",
+    autoSave: false,
+  },
+];
+
+export const totalGoalSaved = savingsGoals.reduce((s, g) => s + g.currentAmount, 0);
+export const totalGoalTarget = savingsGoals.reduce((s, g) => s + g.targetAmount, 0);
+
+export const familyMembers: FamilyMember[] = [
+  {
+    id: "fm-1",
+    name: "Muhammad J.",
+    relationship: "self",
+    age: 42,
+    linkedAccounts: 8,
+    monthlyCost: 0,
+    initials: "MJ",
+    color: "bg-accent-green",
+  },
+  {
+    id: "fm-2",
+    name: "Sarah J.",
+    relationship: "spouse",
+    age: 39,
+    linkedAccounts: 4,
+    monthlyCost: 0,
+    initials: "SJ",
+    color: "bg-accent-blue",
+  },
+  {
+    id: "fm-3",
+    name: "Amir J.",
+    relationship: "child",
+    age: 14,
+    linkedAccounts: 1,
+    monthlyCost: 420,
+    initials: "AJ",
+    color: "bg-accent-purple",
+  },
+  {
+    id: "fm-4",
+    name: "Layla J.",
+    relationship: "child",
+    age: 10,
+    linkedAccounts: 0,
+    monthlyCost: 380,
+    initials: "LJ",
+    color: "bg-accent-teal",
+  },
+];
+
+export const spendingCategories: SpendingCategory[] = [
+  {
+    id: "cat-housing",
+    name: "Housing",
+    amount: 2956,
+    percent: 23.1,
+    icon: "home",
+    color: "#3b82f6",
+    trend: "flat",
+    trendValue: "Same as last month",
+    subcategories: [
+      { name: "Mortgage", amount: 2956 },
+    ],
+  },
+  {
+    id: "cat-food",
+    name: "Food & Dining",
+    amount: 1620,
+    percent: 12.7,
+    icon: "utensils",
+    color: "#f97316",
+    trend: "up",
+    trendValue: "+$220 vs budget",
+    subcategories: [
+      { name: "Groceries", amount: 840 },
+      { name: "Restaurants", amount: 480 },
+      { name: "Coffee shops", amount: 120 },
+      { name: "Meal delivery", amount: 180 },
+    ],
+  },
+  {
+    id: "cat-transport",
+    name: "Transportation",
+    amount: 1085,
+    percent: 8.5,
+    icon: "car",
+    color: "#a855f7",
+    trend: "down",
+    trendValue: "-$115 vs last month",
+    subcategories: [
+      { name: "Auto loan payment", amount: 645 },
+      { name: "Gas", amount: 240 },
+      { name: "Maintenance", amount: 120 },
+      { name: "Parking", amount: 80 },
+    ],
+  },
+  {
+    id: "cat-insurance",
+    name: "Insurance",
+    amount: 1751,
+    percent: 13.7,
+    icon: "shield",
+    color: "#14b8a6",
+    trend: "flat",
+    trendValue: "No change",
+    subcategories: [
+      { name: "Health", amount: 890 },
+      { name: "Home", amount: 215 },
+      { name: "Auto", amount: 184 },
+      { name: "Life", amount: 142 },
+      { name: "Business GL", amount: 320 },
+    ],
+  },
+  {
+    id: "cat-debt",
+    name: "Debt Payments",
+    amount: 3764,
+    percent: 29.5,
+    icon: "credit-card",
+    color: "#ef4444",
+    trend: "down",
+    trendValue: "-$36 vs last month",
+    subcategories: [
+      { name: "Mortgage", amount: 2956 },
+      { name: "Auto loan", amount: 645 },
+      { name: "Credit cards (min)", amount: 163 },
+    ],
+  },
+  {
+    id: "cat-subs",
+    name: "Subscriptions",
+    amount: 287,
+    percent: 2.2,
+    icon: "repeat",
+    color: "#eab308",
+    trend: "up",
+    trendValue: "+$37 over budget",
+    subcategories: [
+      { name: "Streaming", amount: 54 },
+      { name: "Software", amount: 75 },
+      { name: "Meal delivery", amount: 80 },
+      { name: "Other", amount: 78 },
+    ],
+  },
+  {
+    id: "cat-shopping",
+    name: "Shopping",
+    amount: 640,
+    percent: 5.0,
+    icon: "shopping-bag",
+    color: "#22c55e",
+    trend: "down",
+    trendValue: "-$160 under budget",
+    subcategories: [
+      { name: "Amazon", amount: 320 },
+      { name: "Clothing", amount: 180 },
+      { name: "Household", amount: 140 },
+    ],
+  },
+  {
+    id: "cat-utilities",
+    name: "Utilities",
+    amount: 380,
+    percent: 3.0,
+    icon: "zap",
+    color: "#f59e0b",
+    trend: "down",
+    trendValue: "-$70 under budget",
+    subcategories: [
+      { name: "Electric", amount: 145 },
+      { name: "Water", amount: 65 },
+      { name: "Internet", amount: 89 },
+      { name: "Phone", amount: 81 },
+    ],
+  },
+];
+
+// Uncategorized transactions needing review
+export interface UncategorizedTx {
+  id: string;
+  description: string;
+  amount: number;
+  date: string;
+  account: string;
+  suggestedCategory: string;
+}
+
+export const uncategorizedTransactions: UncategorizedTx[] = [
+  { id: "tx-1", description: "AMZN MKTP US*2K4R…", amount: 47.82, date: "Mar 10", account: "Chase ····9037", suggestedCategory: "Shopping" },
+  { id: "tx-2", description: "SQ *CORNER BAKERY", amount: 18.40, date: "Mar 9", account: "Discover ····4821", suggestedCategory: "Food & Dining" },
+  { id: "tx-3", description: "APPLE.COM/BILL", amount: 2.99, date: "Mar 8", account: "Chase ····9037", suggestedCategory: "Subscriptions" },
+  { id: "tx-4", description: "COSTCO WHSE #0482", amount: 214.60, date: "Mar 7", account: "Discover ····4821", suggestedCategory: "Shopping" },
+  { id: "tx-5", description: "UBER *TRIP", amount: 24.50, date: "Mar 6", account: "Chase ····9037", suggestedCategory: "Transportation" },
+];
+
+export const taxEstimates: TaxEstimate[] = [
+  { id: "tax-1", label: "Estimated Federal Tax (2026)", amount: 68400, type: "income" },
+  { id: "tax-2", label: "Estimated State Tax (TX)", amount: 0, type: "income" },
+  { id: "tax-3", label: "Mortgage Interest Deduction", amount: -16800, type: "deduction" },
+  { id: "tax-4", label: "Charitable Contributions", amount: -4200, type: "deduction" },
+  { id: "tax-5", label: "Business Pass-through (K-1)", amount: -12600, type: "deduction" },
+  { id: "tax-6", label: "401k / IRA Contributions", amount: -23000, type: "deduction" },
+  { id: "tax-7", label: "Child Tax Credit (×2)", amount: -4000, type: "credit" },
+  { id: "tax-8", label: "Q1 Estimated Payment (paid)", amount: -17100, type: "payment" },
+  { id: "tax-9", label: "Q2 Estimated Payment (due Apr 15)", amount: -17100, type: "payment" },
+];
+
+export const estimatedTaxOwed = taxEstimates.reduce((s, t) => s + t.amount, 0);
+// → Net estimated remaining
+
+export const annualIncome = monthlyCashflow.income * 12;
+export const effectiveTaxRate = Math.round(
+  (taxEstimates.filter((t) => t.type === "income").reduce((s, t) => s + t.amount, 0) / annualIncome) * 100
+);
+
+// Personal financial health scores
+export const personalHealthScores = {
+  overall: 78,
+  savings: 62,
+  debt: 84,
+  insurance: 71,
+  investing: 80,
+  tax: 75,
+  estate: 64,
+};
