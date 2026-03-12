@@ -2,6 +2,7 @@
 
 import { useState, useMemo } from "react";
 import { useRouter } from "next/navigation";
+import { useAuthGuard } from "@/lib/auth";
 import Logo from "@/components/Logo";
 import Card from "@/components/Card";
 import AnimatedNumber from "@/components/AnimatedNumber";
@@ -49,6 +50,7 @@ const tabs: { id: LiabTab; label: string }[] = [
 ];
 
 export default function LiabilitiesPage() {
+  const authed = useAuthGuard();
   const router = useRouter();
   const [activeTab, setActiveTab] = useState<LiabTab>("overview");
   const [timeRange, setTimeRange] = useState("1M");
@@ -74,6 +76,14 @@ export default function LiabilitiesPage() {
   // Payoff timeline estimate (simple: total / monthly payments)
   const monthlyPayments = 2956 + 645 + 68 + 95; // all mins
   const payoffMonths = Math.ceil(totalDebt / monthlyPayments);
+
+  if (!authed) {
+    return (
+      <div className="min-h-dvh bg-bg-primary flex items-center justify-center">
+        <div className="w-8 h-8 border-2 border-accent-green border-t-transparent rounded-full animate-spin" />
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-dvh bg-bg-primary">
@@ -620,10 +630,11 @@ export default function LiabilitiesPage() {
                   : avalancheOrder
                 ).map((id, i) => {
                   const acct = financialAccounts.find((a) => a.id === id);
-                  const loan = loanDetails.find((l) => l.id === id.replace("loan", "loan"));
+                  const loanIdMap: Record<string, string> = { "mortgage-1": "loan-1", "auto-loan-1": "loan-2" };
+                  const loan = loanDetails.find((l) => l.id === (loanIdMap[id] || id));
                   const cc = creditCardDetails.find((c) => c.id === id);
-                  const name = acct?.name || "Unknown";
-                  const balance = acct?.balance || 0;
+                  const name = acct?.name || loan?.name || "Unknown";
+                  const balance = acct?.balance || loan?.currentBalance || 0;
                   const rate = cc?.apr || loan?.interestRate || 0;
 
                   return (

@@ -2,6 +2,7 @@
 
 import { useState, useMemo } from "react";
 import { useRouter } from "next/navigation";
+import { useAuthGuard } from "@/lib/auth";
 import Logo from "@/components/Logo";
 import Card from "@/components/Card";
 import AnimatedNumber from "@/components/AnimatedNumber";
@@ -36,6 +37,7 @@ const tabs: { id: InsTab; label: string }[] = [
 const typeFilters = ["All", "Life", "Home", "Auto", "Health", "Business"];
 
 export default function InsurancePage() {
+  const authed = useAuthGuard();
   const router = useRouter();
   const [activeTab, setActiveTab] = useState<InsTab>("policies");
   const [activeFilter, setActiveFilter] = useState("All");
@@ -85,6 +87,14 @@ export default function InsurancePage() {
   const netWorthCoverageRatio = Math.round(
     (totalCoverage / combinedNetWorth) * 100
   );
+
+  if (!authed) {
+    return (
+      <div className="min-h-dvh bg-bg-primary flex items-center justify-center">
+        <div className="w-8 h-8 border-2 border-accent-green border-t-transparent rounded-full animate-spin" />
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-dvh bg-bg-primary">

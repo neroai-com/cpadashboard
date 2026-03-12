@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Logo from "@/components/Logo";
+import { validateCredentials, setAuthenticated } from "@/lib/auth";
 import { Eye, EyeOff, Fingerprint, ShieldCheck } from "lucide-react";
 
 export default function LoginPage() {
@@ -26,8 +27,13 @@ export default function LoginPage() {
 
     setLoading(true);
     setTimeout(() => {
-      setLoading(false);
-      router.push("/dashboard");
+      if (validateCredentials(email, password)) {
+        setAuthenticated();
+        router.push("/dashboard");
+      } else {
+        setLoading(false);
+        setError("Invalid email or password. Please try again.");
+      }
     }, 600);
   }
 

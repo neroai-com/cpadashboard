@@ -1,6 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
+import { clearAuth } from "@/lib/auth";
 import Logo from "@/components/Logo";
 import Card from "@/components/Card";
 import {
@@ -116,7 +117,7 @@ export default function SettingsView() {
 
       <div className="mt-8 text-center animate-fade-in-up delay-3">
         <button
-          onClick={() => router.push("/")}
+          onClick={() => { clearAuth(); router.push("/"); }}
           className="inline-flex items-center gap-2 text-sm text-red-400 hover:text-red-300 font-medium transition-colors"
         >
           <LogOut size={14} />

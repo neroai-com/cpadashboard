@@ -2,6 +2,7 @@
 
 import { useState, useMemo } from "react";
 import { useRouter } from "next/navigation";
+import { useAuthGuard } from "@/lib/auth";
 import Logo from "@/components/Logo";
 import Card from "@/components/Card";
 import AnimatedNumber from "@/components/AnimatedNumber";
@@ -38,6 +39,7 @@ const tabs: { id: AssetTab; label: string }[] = [
 ];
 
 export default function AssetsPage() {
+  const authed = useAuthGuard();
   const router = useRouter();
   const [activeTab, setActiveTab] = useState<AssetTab>("portfolio");
 
@@ -71,6 +73,14 @@ export default function AssetsPage() {
     (perfChange / portfolioPerformance[0].portfolio) *
     100
   ).toFixed(1);
+
+  if (!authed) {
+    return (
+      <div className="min-h-dvh bg-bg-primary flex items-center justify-center">
+        <div className="w-8 h-8 border-2 border-accent-green border-t-transparent rounded-full animate-spin" />
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-dvh bg-bg-primary">

@@ -632,9 +632,9 @@ export const upcomingObligations: UpcomingObligation[] = [
 ];
 
 // Snowball payoff order (smallest balance first)
-export const snowballOrder = ["cc-1", "cc-2", "loan-2", "loan-1"];
+export const snowballOrder = ["cc-1", "cc-2", "auto-loan-1", "mortgage-1"];
 // Avalanche payoff order (highest rate first)
-export const avalancheOrder = ["cc-1", "cc-2", "loan-1", "loan-2"];
+export const avalancheOrder = ["cc-1", "cc-2", "mortgage-1", "auto-loan-1"];
 
 /* ══════════════════════════════════════════════════════
    INSURANCE DATA

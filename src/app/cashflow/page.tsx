@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { useAuthGuard } from "@/lib/auth";
 import Logo from "@/components/Logo";
 import Card from "@/components/Card";
 import AnimatedNumber from "@/components/AnimatedNumber";
@@ -36,6 +37,7 @@ const tabs: { id: CFTab; label: string }[] = [
 ];
 
 export default function CashFlowPage() {
+  const authed = useAuthGuard();
   const router = useRouter();
   const [activeTab, setActiveTab] = useState<CFTab>("overview");
 
@@ -48,6 +50,14 @@ export default function CashFlowPage() {
 
   // Overbudget categories
   const overBudget = budgetCategories.filter((c) => c.actual > c.budgeted);
+
+  if (!authed) {
+    return (
+      <div className="min-h-dvh bg-bg-primary flex items-center justify-center">
+        <div className="w-8 h-8 border-2 border-accent-green border-t-transparent rounded-full animate-spin" />
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-dvh bg-bg-primary">

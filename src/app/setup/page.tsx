@@ -2,6 +2,7 @@
 
 import { useState, useMemo, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
+import { useAuthGuard } from "@/lib/auth";
 import Logo from "@/components/Logo";
 import Pill from "@/components/Pill";
 import ProgressBar from "@/components/ProgressBar";
@@ -25,6 +26,7 @@ const stepsMeta = [
 ];
 
 function SetupContent() {
+  const authed = useAuthGuard();
   const router = useRouter();
   const searchParams = useSearchParams();
   const entityId = searchParams.get("entity");

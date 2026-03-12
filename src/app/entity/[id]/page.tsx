@@ -2,6 +2,7 @@
 
 import { use, Suspense } from "react";
 import { useRouter } from "next/navigation";
+import { useAuthGuard } from "@/lib/auth";
 import Logo from "@/components/Logo";
 import Card from "@/components/Card";
 import { entities, businessServices, entityInsights } from "@/lib/data";
@@ -38,8 +39,17 @@ const serviceIcons: Record<string, LucideIcon> = {
 };
 
 function EntityContent({ id }: { id: string }) {
+  const authed = useAuthGuard();
   const router = useRouter();
   const entity = entities.find((e) => e.id === id);
+
+  if (!authed) {
+    return (
+      <div className="min-h-dvh bg-bg-primary flex items-center justify-center">
+        <div className="w-8 h-8 border-2 border-accent-green border-t-transparent rounded-full animate-spin" />
+      </div>
+    );
+  }
 
   if (!entity) {
     return (
