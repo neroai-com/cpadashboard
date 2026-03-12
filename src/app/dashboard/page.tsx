@@ -8,6 +8,8 @@ import CombinedView from "@/components/views/CombinedView";
 import BusinessView from "@/components/views/BusinessView";
 import IndividualView from "@/components/views/IndividualView";
 import SettingsView from "@/components/views/SettingsView";
+import AIOrb from "@/components/ai/AIOrb";
+import AICommandPalette from "@/components/ai/AICommandPalette";
 
 export default function DashboardPage() {
   const authed = useAuthGuard();
@@ -44,6 +46,8 @@ export default function DashboardPage() {
         </div>
       </div>
       <BottomNav activeTab={activeTab} onTabChange={setActiveTab} />
+      <AIOrb />
+      <AICommandPalette />
     </div>
   );
 }

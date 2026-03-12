@@ -23,6 +23,8 @@ import {
   upcomingObligations,
 } from "@/lib/data";
 import { getGreeting, formatCurrency } from "@/lib/utils";
+import AIBanner from "@/components/ai/AIBanner";
+import AISpark from "@/components/ai/AISpark";
 import {
   Briefcase,
   Home,
@@ -41,6 +43,7 @@ import {
   Shield,
   Receipt,
   PieChart,
+  Bot,
   type LucideIcon,
 } from "lucide-react";
 
@@ -96,6 +99,7 @@ const combined12moChange =
 
 // Quick-access pages
 const quickPages: { label: string; path: string; icon: LucideIcon; color: string; description: string }[] = [
+  { label: "AI Advisor", path: "/ai-advisor", icon: Bot, color: "text-accent-green", description: "AI CFO, insights, scenarios" },
   { label: "Net Worth", path: "/networth", icon: BarChart3, color: "text-accent-green", description: "Assets, debt, trends" },
   { label: "Liabilities", path: "/liabilities", icon: CreditCard, color: "text-accent-orange", description: "Debt, mortgages, cards" },
   { label: "Cash Flow", path: "/cashflow", icon: Receipt, color: "text-accent-blue", description: "Budget, income, forecast" },
@@ -123,31 +127,43 @@ export default function CombinedView({ onNavigate }: CombinedViewProps) {
       {/* Greeting */}
       <div className="animate-fade-in-up delay-1">
         <h1 className="text-2xl font-bold mb-1">{greeting}, Muhammad.</h1>
-        <p className="text-text-secondary text-sm mb-5">
+        <p className="text-text-secondary text-sm mb-4">
           Your single source of truth across personal, business, and family.
         </p>
+      </div>
+
+      {/* AI Insight Banner */}
+      <div className="mb-4 animate-fade-in-up delay-1">
+        <AIBanner />
       </div>
 
       {/* KPI Row */}
       <div className="grid grid-cols-2 gap-2 mb-4 animate-fade-in-up delay-2">
         {dashboardKPIs.map((kpi) => (
-          <KPICard
-            key={kpi.id}
-            label={kpi.label}
-            value={kpi.value}
-            subValue={kpi.subValue}
-            trend={kpi.trend}
-            trendValue={kpi.trendValue}
-            icon={kpi.icon}
-          />
+          <div key={kpi.id} className="relative">
+            <KPICard
+              label={kpi.label}
+              value={kpi.value}
+              subValue={kpi.subValue}
+              trend={kpi.trend}
+              trendValue={kpi.trendValue}
+              icon={kpi.icon}
+            />
+            <div className="absolute top-2 right-2">
+              <AISpark metricId={kpi.id} size={10} />
+            </div>
+          </div>
         ))}
       </div>
 
       {/* Hero Net Worth Card */}
       <Card variant="hero" className="mb-4 animate-fade-in-up delay-3">
-        <h2 className="text-xs font-semibold tracking-wider text-text-secondary uppercase mb-3">
-          Combined Overview
-        </h2>
+        <div className="flex items-center justify-between mb-3">
+          <h2 className="text-xs font-semibold tracking-wider text-text-secondary uppercase">
+            Combined Overview
+          </h2>
+          <AISpark metricId="net-worth" size={11} />
+        </div>
 
         <p className="text-xs text-text-muted">Total net worth</p>
         <div className="flex items-baseline gap-1">
@@ -244,9 +260,12 @@ export default function CombinedView({ onNavigate }: CombinedViewProps) {
       {/* Cashflow This Month */}
       <Card variant="glass" className="mb-4 animate-fade-in-up delay-5">
         <div className="flex items-center justify-between mb-1">
-          <h2 className="text-xs font-semibold tracking-wider text-text-secondary uppercase">
-            Cashflow This Month
-          </h2>
+          <div className="flex items-center gap-2">
+            <h2 className="text-xs font-semibold tracking-wider text-text-secondary uppercase">
+              Cashflow This Month
+            </h2>
+            <AISpark metricId="cashflow-income" size={10} />
+          </div>
           <button
             onClick={() => router.push("/cashflow")}
             className="text-[10px] font-medium text-accent-green hover:text-accent-green-dark transition-colors flex items-center gap-0.5"
@@ -418,11 +437,19 @@ export default function CombinedView({ onNavigate }: CombinedViewProps) {
 
       {/* AI CFO Insights */}
       <Card className="mb-6 animate-fade-in-up delay-7">
-        <div className="flex items-center gap-2 mb-1">
-          <Sparkles size={14} className="text-accent-green" />
-          <h2 className="text-xs font-semibold tracking-wider text-text-secondary uppercase">
-            AI CFO Insights
-          </h2>
+        <div className="flex items-center justify-between mb-1">
+          <div className="flex items-center gap-2">
+            <Sparkles size={14} className="text-accent-green" />
+            <h2 className="text-xs font-semibold tracking-wider text-text-secondary uppercase">
+              AI CFO Insights
+            </h2>
+          </div>
+          <button
+            onClick={() => router.push("/ai-advisor")}
+            className="text-[10px] font-medium text-accent-green hover:text-accent-green-dark transition-colors flex items-center gap-0.5"
+          >
+            AI Advisor <ChevronRight size={10} />
+          </button>
         </div>
         <p className="text-text-secondary text-xs mb-4">
           Top opportunities and risks across everything.
