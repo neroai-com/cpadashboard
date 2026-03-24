@@ -1,0 +1,29 @@
+{
+  "expo": {
+    "name": "myCPA Dashboard",
+    "slug": "cpadashboard",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "dark",
+    "newArchEnabled": true,
+    "splash": {
+      "backgroundColor": "#0b1120"
+    },
+    "ios": {
+      "supportsTablet": false,
+      "bundleIdentifier": "com.cpadashboard.app"
+    },
+    "android": {
+      "adaptiveIcon": {
+        "backgroundColor": "#0b1120"
+      },
+      "package": "com.cpadashboard.app"
+    },
+    "scheme": "cpadashboard",
+    "plugins": [
+      "expo-asset",
+      "expo-font"
+    ]
+  }
+}

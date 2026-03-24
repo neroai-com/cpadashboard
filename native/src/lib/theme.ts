@@ -1,0 +1,22 @@
+// Raw color values for use in SVG charts, Reanimated styles, and expo-linear-gradient
+export const colors = {
+  bgPrimary: "#0b1120",
+  bgSecondary: "#111827",
+  bgCard: "#162033",
+  bgCardHover: "#1c2940",
+  bgInput: "#1e293b",
+  borderPrimary: "#1e3a5f",
+  borderSecondary: "#334155",
+  accentGreen: "#22c55e",
+  accentGreenDark: "#16a34a",
+  accentBlue: "#3b82f6",
+  accentPurple: "#a855f7",
+  accentOrange: "#f97316",
+  accentYellow: "#eab308",
+  accentTeal: "#14b8a6",
+  accentRed: "#ef4444",
+  textPrimary: "#f1f5f9",
+  textSecondary: "#94a3b8",
+  textMuted: "#64748b",
+  textGreen: "#4ade80",
+};

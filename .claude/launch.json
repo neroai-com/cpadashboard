@@ -7,6 +7,13 @@
       "runtimeArgs": ["next", "dev", "--turbopack"],
       "port": 3000,
       "autoPort": true
+    },
+    {
+      "name": "native",
+      "runtimeExecutable": "npx",
+      "runtimeArgs": ["expo", "start", "--web", "--port", "8081"],
+      "port": 8081,
+      "cwd": "native"
     }
   ]
 }
